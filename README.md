@@ -1,16 +1,16 @@
 # 🦠 COVIDWAR v2
-**A fast-paced survival shooter built with Pygame**
 
 > Version 2 introduces **background music**, a **redesigned UI**, and smoother gameplay experience.
 
 ---
-
-## 🎮 About The Game
+**A fast-paced survival shooter built with Pygame**
 **COVIDWAR v2** is an arcade-style survival shooting game where players must eliminate waves of virus enemies while staying alive as long as possible.  
 This version improves the visual design and adds immersive background music for a better gameplay experience.
 
 **Your mission:**  
 Survive. Shoot. Score. Repeat.
+
+https://github.com/user-attachments/assets/42a2b343-15fb-47f8-8558-c82d4a85c4b3
 
 ---
 
