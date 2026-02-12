@@ -74,7 +74,7 @@ python covid19War.py
 
 | Action        | Keyboard          | Controller |
 | ------------- | ----------------- | ---------- |
-| Move          | Arrow Keys        | Left Stick |
+| Move          | Arrow Keys + AWSD | Left Stick |
 | Shoot         | Space             | X / A      |
 | Pause         | ESC               | Start / +  |
 | Menu Navigate | Arrow Keys        | D-Pad      |
