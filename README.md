@@ -1,5 +1,8 @@
 # 🦠 COVIDWAR v2
 
+![Python](https://img.shields.io/badge/Python-3.x-blue)
+![Pygame](https://img.shields.io/badge/Pygame-Game%20Engine-green)
+
 > Version 2 introduces **background music**, a **redesigned UI**, and smoother gameplay experience. ( check out [Version 1](https://github.com/John-Da/Covid19WarShooter-Using-Pygame-Python) )
 
 ---
