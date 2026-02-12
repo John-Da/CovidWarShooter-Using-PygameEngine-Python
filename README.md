@@ -72,13 +72,13 @@ python covid19War.py
 
 ## 🎮 Controls
 
-| Action        | Keyboard               | Controller         |
-| ------------- | ---------------------- | ------------------ |
-| Move          | Arrow Keys / AWSD      | Left Stick         |
-| Shoot         | Space                  | X / A              |
-| Pause         | ESC                    | Start / +          |
-| Menu Navigate | Arrow Keys             | Left Stick         |
-| Volume        | Arrow Keys /  Mouse    | Left Stick ( L/R ) |
+| Action        | Keyboard                    | Controller         |
+| ------------- | --------------------------- | ------------------ |
+| Move          | Arrow Keys / AWSD           | Left Stick         |
+| Shoot         | Space                       | X / A              |
+| Pause         | ESC                         | Start / +          |
+| Menu Navigate | Arrow Keys                  | Left Stick         |
+| Volume        | Arrow Keys /  Left Click    | Left Stick ( L/R ) |
 
 
 ## 🧠 Objective
