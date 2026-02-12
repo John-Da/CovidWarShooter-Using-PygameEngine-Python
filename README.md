@@ -78,7 +78,7 @@ python covid19War.py
 | Shoot         | Space                  | X / A              |
 | Pause         | ESC                    | Start / +          |
 | Menu Navigate | Arrow Keys             | Left Stick         |
-| Volumn        | Arrow Keys /  Mouse    | Left Stick ( L/R ) |
+| Volume        | Arrow Keys /  Mouse    | Left Stick ( L/R ) |
 
 
 ## 🧠 Objective
