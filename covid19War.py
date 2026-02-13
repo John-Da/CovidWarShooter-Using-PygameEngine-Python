@@ -1,6 +1,5 @@
 import pygame
 import random
-import sys
 import os
 import math
 
@@ -46,7 +45,7 @@ def update_volumes():
 
 
 def play_music():
-    for path in ["sounds/minecraft-gaming-background-music.mp3", "minecraft-gaming-background-music.mp3"]:
+    for path in ["assets/sounds/background-music.mp3", "background-music.mp3"]:
         try:
             pygame.mixer.music.load(get_path(path))
             pygame.mixer.music.play(-1)
@@ -105,7 +104,8 @@ class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
         try:
-            self.images = [pygame.image.load(get_path(f"JiJiSR1{s}.png")).convert_alpha() for s in ["", "L", "R"]]
+            self.images = [pygame.image.load(get_path(f"assets/images/JiJiSR1{s}.png")).convert_alpha() for s in
+                           ["", "L", "R"]]
         except:
             self.images = [pygame.Surface((40, 60), pygame.SRCALPHA) for _ in range(3)]
         self.image = self.images[0]
@@ -201,8 +201,8 @@ class VolumeSlider:
 # HELPERS
 # ======================================
 def spawn_enemy(is_wave):
-    c = Covid(is_wave);
-    allsprites.add(c);
+    c = Covid(is_wave)
+    allsprites.add(c)
     covids.add(c)
 
 
@@ -274,6 +274,8 @@ while running:
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT: running = False
+
+        # KEYBOARD EVENTS
         if event.type == pygame.KEYDOWN:
             if game_state == STATE_GAMEOVER and event.key in [pygame.K_RETURN, pygame.K_SPACE]:
                 game_state = STATE_MENU
@@ -281,11 +283,13 @@ while running:
                 if event.key == pygame.K_UP: menu_index = (menu_index - 1) % 4
                 if event.key == pygame.K_DOWN: menu_index = (menu_index + 1) % 4
                 if event.key == pygame.K_LEFT:
-                    if menu_index == 1: music_volume = max(0, music_volume - 0.05); update_volumes()
-                    if menu_index == 2: sfx_volume = max(0, sfx_volume - 0.05); update_volumes()
+                    if menu_index == 1: music_volume = max(0, music_volume - 0.05)
+                    if menu_index == 2: sfx_volume = max(0, sfx_volume - 0.05)
+                    update_volumes()
                 if event.key == pygame.K_RIGHT:
-                    if menu_index == 1: music_volume = min(1, music_volume + 0.05); update_volumes()
-                    if menu_index == 2: sfx_volume = min(1, sfx_volume + 0.05); update_volumes()
+                    if menu_index == 1: music_volume = min(1, music_volume + 0.05)
+                    if menu_index == 2: sfx_volume = min(1, sfx_volume + 0.05)
+                    update_volumes()
                 if event.key == pygame.K_RETURN:
                     if menu_index == 0:
                         if game_state == STATE_MENU: start_new_game()
@@ -298,54 +302,70 @@ while running:
             if event.key == pygame.K_ESCAPE: game_state = STATE_PAUSE if game_state == STATE_PLAYING else (
                 STATE_PLAYING if game_state == STATE_PAUSE else game_state)
 
+        # CONTROLLER BUTTONS
         if event.type == pygame.JOYBUTTONDOWN:
             if game_state == STATE_GAMEOVER and event.button in [0, 7]:
                 game_state = STATE_MENU
-            elif event.button == 0:
-                if menu_index == 0:
-                    if game_state == STATE_MENU: start_new_game()
-                    game_state = STATE_PLAYING
-                if menu_index == 3:
-                    if game_state == STATE_MENU:
-                        running = False
-                    else:
-                        game_state = STATE_MENU
-            if event.button in [6, 7]: game_state = STATE_PAUSE if game_state == STATE_PLAYING else (
-                STATE_PLAYING if game_state == STATE_PAUSE else game_state)
+            elif event.button == 0:  # 'A' or Cross
+                if game_state in [STATE_MENU, STATE_PAUSE]:
+                    if menu_index == 0:
+                        if game_state == STATE_MENU: start_new_game()
+                        game_state = STATE_PLAYING
+                    if menu_index == 3:
+                        if game_state == STATE_MENU:
+                            running = False
+                        else:
+                            game_state = STATE_MENU
+            if event.button in [6, 7]:  # Select/Start
+                game_state = STATE_PAUSE if game_state == STATE_PLAYING else (
+                    STATE_PLAYING if game_state == STATE_PAUSE else game_state)
 
+    # CONTROLLER MENU NAVIGATION (Stick & D-Pad)
     if game_state in [STATE_MENU, STATE_PAUSE] and controller:
         ay, ax = controller.get_axis(1), controller.get_axis(0)
         hat = controller.get_hat(0) if controller.get_numhats() > 0 else (0, 0)
         if stick_ready:
             if ay < -0.5 or hat[1] == 1:
-                menu_index = (menu_index - 1) % 4; stick_ready = False
+                menu_index = (menu_index - 1) % 4
+                stick_ready = False
             elif ay > 0.5 or hat[1] == -1:
-                menu_index = (menu_index + 1) % 4; stick_ready = False
-            if menu_index == 1:
-                if ax < -0.5 or hat[0] == -1: music_volume = max(0,
-                                                                 music_volume - 0.05); update_volumes(); stick_ready = False
-                if ax > 0.5 or hat[0] == 1: music_volume = min(1,
-                                                               music_volume + 0.05); update_volumes(); stick_ready = False
-            if menu_index == 2:
-                if ax < -0.5 or hat[0] == -1: sfx_volume = max(0,
-                                                               sfx_volume - 0.05); update_volumes(); stick_ready = False
-                if ax > 0.5 or hat[0] == 1: sfx_volume = min(1,
-                                                             sfx_volume + 0.05); update_volumes(); stick_ready = False
+                menu_index = (menu_index + 1) % 4
+                stick_ready = False
+
+            if menu_index in [1, 2]:  # Volume control
+                if ax < -0.5 or hat[0] == -1:
+                    if menu_index == 1:
+                        music_volume = max(0, music_volume - 0.05)
+                    else:
+                        sfx_volume = max(0, sfx_volume - 0.05)
+                    update_volumes()
+                    stick_ready = False
+                elif ax > 0.5 or hat[0] == 1:
+                    if menu_index == 1:
+                        music_volume = min(1, music_volume + 0.05)
+                    else:
+                        sfx_volume = min(1, sfx_volume + 0.05)
+                    update_volumes()
+                    stick_ready = False
         if abs(ay) < 0.2 and abs(ax) < 0.2 and hat == (0, 0): stick_ready = True
 
     if game_state == STATE_PLAYING:
         bg_y = (bg_y + 2) % BASE_HEIGHT
+
+        # IN-GAME CONTROLS (Combined Keyboard/Controller)
         keys = pygame.key.get_pressed()
         kx = (keys[pygame.K_RIGHT] or keys[pygame.K_d]) - (keys[pygame.K_LEFT] or keys[pygame.K_a])
         ky = (keys[pygame.K_DOWN] or keys[pygame.K_s]) - (keys[pygame.K_UP] or keys[pygame.K_w])
+
         if controller:
             if abs(controller.get_axis(0)) > 0.1: kx = controller.get_axis(0)
             if abs(controller.get_axis(1)) > 0.1: ky = controller.get_axis(1)
-            if controller.get_button(0) or controller.get_button(5): player.shoot()
+            if controller.get_button(0) or controller.get_button(5): player.shoot()  # A or R1
+
         player.speedx, player.speedy = kx * 8, ky * 8
         if keys[pygame.K_SPACE]: player.shoot()
 
-        # WAVE SYSTEM
+        # WAVE SYSTEM - FIXED
         mode_timer -= 1
         if game_mode == "normal":
             if mode_timer <= 0:
@@ -353,7 +373,10 @@ while running:
                 if siren_sound: siren_sound.play()
         elif game_mode == "wave":
             spawn_timer -= 1
-            if spawn_timer <= 0: spawn_enemy(True); spawn_timer = 15
+            if spawn_timer <= 0:
+                spawn_enemy(True)
+                spawn_timer = 15
+
             if mode_timer <= 0:
                 if current_wave % 10 == 0:
                     cycle_count += 1
@@ -363,6 +386,8 @@ while running:
                 for _ in range(5): spawn_enemy(False)
 
         allsprites.update()
+
+        # COLLISIONS
         hits = pygame.sprite.groupcollide(covids, cures, True, True)
         for hit in hits:
             kill_points = random.randint(10, 120)
@@ -371,24 +396,22 @@ while running:
             if game_mode == "normal": spawn_enemy(False)
             if boom_sound: boom_sound.play()
             explosions.append(Explosion(hit.rect.center))
-            if random.random() < 0.10:
-                heal_val = random.randint(2, 15)
-                player.life = min(100, player.life + heal_val)
-                floating_texts.append(FloatingText(hit.rect.center, f"+{heal_val} HP", (0, 255, 100)))
-            else:
-                floating_texts.append(FloatingText(hit.rect.center, f"+{kill_points}"))
+            floating_texts.append(FloatingText(hit.rect.center, f"+{kill_points}"))
 
         if pygame.sprite.spritecollide(player, covids, True) and player.hit_cooldown == 0:
             player.life -= 15
             shake_timer, player.hit_cooldown = 12, 30
-            if player.life <= 0: high_score = max(high_score, player.score); game_state = STATE_GAMEOVER
+            if player.life <= 0:
+                high_score = max(high_score, player.score)
+                game_state = STATE_GAMEOVER
 
         explosions = [e for e in explosions if e.update()]
         floating_texts = [f for f in floating_texts if f.update()]
 
     # DRAWING
-    game_surface.blit(bg, (0, bg_y));
+    game_surface.blit(bg, (0, bg_y))
     game_surface.blit(bg, (0, bg_y - BASE_HEIGHT))
+
     if game_state in [STATE_MENU, STATE_PAUSE]:
         t = font_big.render("COVID19 WAR" if game_state == STATE_MENU else "PAUSED", True, (255, 255, 255))
         game_surface.blit(t, (BASE_WIDTH // 2 - t.get_width() // 2, 100))
@@ -400,6 +423,7 @@ while running:
         b2_txt = "EXIT GAME" if game_state == STATE_MENU else "MAIN MENU"
         b2_surf = font_med.render(b2_txt, True, (0, 255, 255) if menu_index == 3 else (100, 100, 100))
         game_surface.blit(b2_surf, (BASE_WIDTH // 2 - b2_surf.get_width() // 2, 580))
+
     elif game_state == STATE_PLAYING:
         allsprites.draw(game_surface)
         for e in explosions: e.draw(game_surface)
@@ -408,6 +432,7 @@ while running:
             alert_timer -= 1
             m = font_med.render(f"--- WARNING: WAVE {current_wave} ---", True, (255, 50, 50))
             game_surface.blit(m, (BASE_WIDTH // 2 - m.get_width() // 2, 120))
+
     elif game_state == STATE_GAMEOVER:
         game_surface.fill((10, 0, 0))
         over_t = font_big.render("MISSION FAILED", True, (255, 50, 50))
@@ -419,21 +444,21 @@ while running:
         y_off = 280
         for i, m_score in enumerate(mission_scores):
             if y_off > 550: break
-            txt = font_small.render(f"Mission {i+1} - Score: {m_score}", True, (0, 255, 255))
+            txt = font_small.render(f"Mission {i + 1} - Score: {m_score}", True, (0, 255, 255))
             game_surface.blit(txt, (BASE_WIDTH // 2 - txt.get_width() // 2, y_off))
             y_off += 25
         pulse = (math.sin(pygame.time.get_ticks() * 0.005) + 1) / 2
-        cont_t = font_small.render("PRESS A / ENTER TO CONTINUE", True, (255, 255, 255))
+        cont_t = font_small.render("PRESS ENTER / A TO CONTINUE", True, (255, 255, 255))
         cont_t.set_alpha(int(pulse * 255))
         game_surface.blit(cont_t, (BASE_WIDTH // 2 - cont_t.get_width() // 2, 650))
 
     scaled_surf = pygame.transform.scale(game_surface, (sw, sh))
     sx, sy = offset_x, offset_y
     if shake_timer > 0:
-        shake_timer -= 1;
-        sx += random.randint(-6, 6);
+        shake_timer -= 1
+        sx += random.randint(-6, 6)
         sy += random.randint(-6, 6)
-    window.fill((0, 0, 0));
+    window.fill((0, 0, 0))
     window.blit(scaled_surf, (sx, sy))
     if game_state in [STATE_PLAYING, STATE_PAUSE]: draw_external_ui(window, sx, sw)
     pygame.display.flip()
