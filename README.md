@@ -13,7 +13,7 @@ This version improves the visual design and adds immersive background music for 
 **Your mission:**  
 Survive. Shoot. Score. Repeat.
 
-https://github.com/user-attachments/assets/42a2b343-15fb-47f8-8558-c82d4a85c4b3
+[Demo on Youtube]()
 
 ---
 
